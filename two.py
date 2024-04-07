@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
+import sqlite3
 
 class WindowOne:
     def __init__(self, root):
@@ -8,41 +9,96 @@ class WindowOne:
 
         self.selected_category = tk.StringVar()
 
-        # Create a label and ComboBox to select quiz category
-        ttk.Label(self.root, text="Select Category:").pack(pady=10)
+        ttk.Label(self.root, text="Select Category:").pack(pady=20)
         self.category_combo = ttk.Combobox(self.root, width=30, textvariable=self.selected_category)
-        self.category_combo['values'] = ["General Knowledge", "Science", "History", "Geography"]
+        self.category_combo['values'] = ["OCM Logistic", "Modern History", "Finance", "Business Analytics", "Prog Logic"]
         self.category_combo.pack(pady=10)
 
-        # Create a button to start the quiz
         self.start_button = ttk.Button(self.root, text="Start Quiz Now", command=self.start_quiz)
         self.start_button.pack(pady=10)
 
     def start_quiz(self):
         selected_category = self.selected_category.get()
-        self.root.destroy()  # Close the current window
+        if selected_category:
+            self.root.destroy()
 
-        # Open the quiz window based on selected category
-        quiz_window = tk.Tk()
-        WindowTwo(quiz_window, selected_category)
+            quiz_window = tk.Tk()
+            quiz_window.title(f"Quiz: {selected_category}")
+            quiz_window.geometry("600x400")
+
+            WindowTwo(quiz_window, selected_category)
 
 class WindowTwo:
     def __init__(self, root, category):
         self.root = root
-        self.root.title(f"Quiz: {category}")
+        self.category = category
 
-        # Placeholder: Display quiz questions based on category
-        ttk.Label(self.root, text=f"Quiz Category: {category}").pack(pady=10)
-        ttk.Label(self.root, text="Question 1: What is the capital of France?").pack(pady=5)
-        ttk.Label(self.root, text="A. London").pack()
-        ttk.Label(self.root, text="B. Paris").pack()
-        ttk.Label(self.root, text="C. Rome").pack()
-        ttk.Label(self.root, text="D. Berlin").pack()
+        self.conn = sqlite3.connect('QuestionsAnswer1.db')
+        self.cursor = self.conn.cursor()
+
+        self.cursor.execute(f"SELECT * FROM {self.category.replace(' ', '_')}")
+        self.questions = self.cursor.fetchall()
+        self.current_question_index = 0
+        self.score = 0  # Initialize score counter
+
+        self.setup_ui()
+
+    def setup_ui(self):
+        self.question_label = ttk.Label(self.root, text="", wraplength=500)
+        self.question_label.pack(pady=20)
+
+        self.answer_var = tk.StringVar()
+        self.answer_var.set("")  # Initialize answer variable
+
+        self.answer_buttons = []  # List to store Radiobuttons
+
+        self.next_button = ttk.Button(self.root, text="Next", command=self.next_question)
+        self.next_button.pack(pady=10)
+
+        self.display_question()
+
+    def display_question(self):
+        if self.current_question_index < len(self.questions):
+            question_id, question_text, correct_answer = self.questions[self.current_question_index]
+            self.question_label.config(text=f"Question {question_id}: {question_text}")
+
+            # Fetch answer choices and corresponding values from the current question
+            self.cursor.execute(f"SELECT answer, option_value FROM {self.category.replace(' ', '_')} WHERE id=?", (question_id,))
+            answer_choices = self.cursor.fetchall()
+
+            # Display answer choices as Radiobuttons
+            for answer, option_value in answer_choices:
+                button = ttk.Radiobutton(self.root, text=f"{option_value}: {answer}", variable=self.answer_var, value=option_value)
+                self.answer_buttons.append(button)
+                button.pack(pady=5, anchor=tk.CENTER)  # Center the Radiobuttons horizontally
+
+            # Clear previous selection
+            self.answer_var.set("")
+        else:
+            self.show_quiz_result()
+
+    def next_question(self):
+        question_id, question_text, correct_answer = self.questions[self.current_question_index]
+        user_answer = self.answer_var.get().strip().upper()
+
+        if user_answer == correct_answer:
+            self.score += 1  # Increment score if answer is correct
+
+        self.current_question_index += 1
+
+        if self.current_question_index < len(self.questions):
+            self.display_question()
+        else:
+            # Show submit button and disable next button on last question
+            self.next_button.config(state=tk.DISABLED)  # Disable next button
+            self.submit_button = ttk.Button(self.root, text="Submit", command=self.show_quiz_result)
+            self.submit_button.pack(pady=10)
+
+    def show_quiz_result(self):
+        messagebox.showinfo("Quiz Completed", f"End of Quiz. You scored {self.score}/{len(self.questions)}")
+        self.root.destroy()
 
 if __name__ == "__main__":
-    # Create the main window (Category Selection)
     root = tk.Tk()
     app_one = WindowOne(root)
-
-    # Start the Tkinter event loop
     root.mainloop()
