@@ -33,13 +33,10 @@ class WindowTwo:
         self.root = root
         self.category = category
 
-        # Connect to the database
         self.conn = sqlite3.connect('QuestionsAnswer1.db')
         self.cursor = self.conn.cursor()
 
-        # Execute SQL query to fetch questions for the selected category
-        table_name = self.category.replace(' ', '_')  # Replace space with underscore
-        self.cursor.execute(f"SELECT id, questions, answers FROM {table_name}")
+        self.cursor.execute(f"SELECT * FROM {self.category.replace(' ', '_')}")
         self.questions = self.cursor.fetchall()
         self.current_question_index = 0
         self.score = 0  # Initialize score counter
