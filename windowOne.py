@@ -1,5 +1,5 @@
-from tkinter import ttk, messagebox
 import tkinter as tk
+from tkinter import ttk, messagebox
 import sqlite3
 
 class WindowOne:
@@ -72,7 +72,6 @@ class WindowTwo:
             # Set answer values for each Radiobutton
             for idx, choice in enumerate(["A", "B", "C"]):
                 self.answer_buttons[idx]['value'] = choice
-                self.answer_buttons[idx]['command'] = lambda c=choice: self.answer_var.set(c)  # Set command to set answer_var
 
             # Clear previous selection
             self.answer_var.set("")
@@ -80,21 +79,25 @@ class WindowTwo:
             self.show_quiz_result()
 
     def next_question(self):
-        question_id, question_text, correct_answer = self.questions[self.current_question_index]
-        user_answer = self.answer_var.get().strip().upper()
-
-        if user_answer == correct_answer:
-            self.score += 1  # Increment score if answer is correct
-
-        self.current_question_index += 1
-
-        if self.current_question_index < len(self.questions):
-            self.display_question()
+        if self.answer_var.get().strip() == "":
+            # Display a message informing the user to select an answer
+            messagebox.showwarning("No Answer Selected", "Please select an answer before proceeding.")
         else:
-            # Show submit button and disable next button on last question
-            self.next_button.config(state=tk.DISABLED)  # Disable next button
-            self.submit_button = ttk.Button(self.root, text="Submit", command=self.show_quiz_result)
-            self.submit_button.pack(pady=10)
+            question_id, question_text, correct_answer = self.questions[self.current_question_index]
+            user_answer = self.answer_var.get().strip().upper()
+
+            if user_answer == correct_answer:
+                self.score += 1  # Increment score if answer is correct
+
+            self.current_question_index += 1
+
+            if self.current_question_index < len(self.questions):
+                self.display_question()
+            else:
+                # Show submit button and disable next button on last question
+                self.next_button.config(state=tk.DISABLED)  # Disable next button
+                self.submit_button = ttk.Button(self.root, text="Submit", command=self.show_quiz_result)
+                self.submit_button.pack(pady=10)
 
     def show_quiz_result(self):
         messagebox.showinfo("Quiz Completed", f"End of Quiz. You scored {self.score}/{len(self.questions)}")
