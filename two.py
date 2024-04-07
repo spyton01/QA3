@@ -1,79 +1,46 @@
 import tkinter as tk
+from tkinter import ttk
 
 class WindowOne:
     def __init__(self, root):
         self.root = root
-        self.root.title("Window One")
+        self.root.title("Quiz Category Selection")
 
-        # Create buttons to switch to Window Two and Window Three
-        self.button_to_window_two = tk.Button(self.root, text="Go to Window Two", command=self.open_window_two)
-        self.button_to_window_two.pack(pady=10)
+        self.selected_category = tk.StringVar()
 
-        self.button_to_window_three = tk.Button(self.root, text="Go to Window Three", command=self.open_window_three)
-        self.button_to_window_three.pack(pady=10)
+        # Create a label and ComboBox to select quiz category
+        ttk.Label(self.root, text="Select Category:").pack(pady=10)
+        self.category_combo = ttk.Combobox(self.root, width=30, textvariable=self.selected_category)
+        self.category_combo['values'] = ["General Knowledge", "Science", "History", "Geography"]
+        self.category_combo.pack(pady=10)
 
-    def open_window_two(self):
-        # Close current window and open Window Two
-        self.root.destroy()
-        window_two = tk.Tk()
-        WindowTwo(window_two)
+        # Create a button to start the quiz
+        self.start_button = ttk.Button(self.root, text="Start Quiz Now", command=self.start_quiz)
+        self.start_button.pack(pady=10)
 
-    def open_window_three(self):
-        # Close current window and open Window Three
-        self.root.destroy()
-        window_three = tk.Tk()
-        WindowThree(window_three)
+    def start_quiz(self):
+        selected_category = self.selected_category.get()
+        self.root.destroy()  # Close the current window
+
+        # Open the quiz window based on selected category
+        quiz_window = tk.Tk()
+        WindowTwo(quiz_window, selected_category)
 
 class WindowTwo:
-    def __init__(self, root):
+    def __init__(self, root, category):
         self.root = root
-        self.root.title("Window Two")
+        self.root.title(f"Quiz: {category}")
 
-        # Create buttons to switch to Window One and Window Three
-        self.button_to_window_one = tk.Button(self.root, text="Go to Window One", command=self.open_window_one)
-        self.button_to_window_one.pack(pady=10)
-
-        self.button_to_window_three = tk.Button(self.root, text="Go to Window Three", command=self.open_window_three)
-        self.button_to_window_three.pack(pady=10)
-
-    def open_window_one(self):
-        # Close current window and open Window One
-        self.root.destroy()
-        window_one = tk.Tk()
-        WindowOne(window_one)
-
-    def open_window_three(self):
-        # Close current window and open Window Three
-        self.root.destroy()
-        window_three = tk.Tk()
-        WindowThree(window_three)
-
-class WindowThree:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Window Three")
-
-        # Create buttons to switch to Window One and Window Two
-        self.button_to_window_one = tk.Button(self.root, text="Go to Window One", command=self.open_window_one)
-        self.button_to_window_one.pack(pady=10)
-
-        self.button_to_window_two = tk.Button(self.root, text="Go to Window Two", command=self.open_window_two)
-        self.button_to_window_two.pack(pady=10)
-
-    def open_window_one(self):
-        # Close current window and open Window One
-        self.root.destroy()
-        window_one = tk.Tk()
-        WindowOne(window_one)
-
-    def open_window_two(self):
-        # Close current window and open Window Two
-        self.root.destroy()
-        window_two = tk.Tk()
-        WindowTwo(window_two)
+        # Placeholder: Display quiz questions based on category
+        ttk.Label(self.root, text=f"Quiz Category: {category}").pack(pady=10)
+        ttk.Label(self.root, text="Question 1: What is the capital of France?").pack(pady=5)
+        ttk.Label(self.root, text="A. London").pack()
+        ttk.Label(self.root, text="B. Paris").pack()
+        ttk.Label(self.root, text="C. Rome").pack()
+        ttk.Label(self.root, text="D. Berlin").pack()
 
 if __name__ == "__main__":
-    # Create the main window (Window One)
+    # Create the main window (Category Selection)
     root = tk.Tk()
     app_one = WindowOne(root)
 
