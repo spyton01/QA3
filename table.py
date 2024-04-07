@@ -98,12 +98,3 @@ connect.commit()
 
 # stop command
 connect.close()
-
-
-
-
-
-
-
-
-
