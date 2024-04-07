@@ -80,6 +80,10 @@ class WindowTwo:
             self.show_quiz_result()
 
     def next_question(self):
+        if self.answer_var.get() == "":
+            messagebox.showwarning("No Answer Selected", "Please select an answer before proceeding to the next question.")
+            return  # Exit the method if no answer is selected
+
         question_id, question_text, correct_answer = self.questions[self.current_question_index]
         user_answer = self.answer_var.get().strip().upper()
 
