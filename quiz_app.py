@@ -1,7 +1,39 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-import dataclass
+from dataclasses import dataclass
 from typing import List
+
+
+class Questions:
+
+    def __init__(self) -> None:
+        pass
+
+    def getQuestion(self) -> List[dict]:
+        questions = [
+            {
+                "question": "What is 2 + 2?",
+                "choices": ["3", "4", "5"],
+                "answer": "4"
+            },
+            {
+                "question": "What is 3 * 5?",
+                "choices": ["12", "15", "18"],
+                "answer": "15"
+            },
+            {
+                "question": "Who was the first President of the United States?",
+                "choices": ["Thomas Jefferson", "George Washington", "Abraham Lincoln"],
+                "answer": "George Washington"
+            },
+            {
+                "question": "In which year did World War II end?",
+                "choices": ["1945", "1939", "1950"],
+                "answer": "1945"
+            }
+        ]
+        return questions
+
 
 # Define data classes for quiz data
 @dataclass
@@ -18,44 +50,6 @@ class Topic:
 @dataclass
 class Quiz:
     topics: List[Topic]
-
-# Initialize quiz data
-def initialize_quiz() -> Quiz:
-    # Define quiz data using the structure from the previous implementation
-    topics = [
-        Topic(
-            name="Mathematics",
-            questions=[
-                Question(
-                    text="What is 2 + 2?",
-                    choices=["3", "4", "5"],
-                    answer="4"
-                ),
-                Question(
-                    text="What is 3 * 5?",
-                    choices=["12", "15", "18"],
-                    answer="15"
-                )
-            ]
-        ),
-        Topic(
-            name="History",
-            questions=[
-                Question(
-                    text="Who was the first President of the United States?",
-                    choices=["Thomas Jefferson", "George Washington", "Abraham Lincoln"],
-                    answer="George Washington"
-                ),
-                Question(
-                    text="In which year did World War II end?",
-                    choices=["1945", "1939", "1950"],
-                    answer="1945"
-                )
-            ]
-        )
-    ]
-    
-    return Quiz(topics)
 
 # Main window class for quiz category selection
 class WindowOne:
@@ -110,7 +104,7 @@ class WindowTwo:
         self.answer_var.set("")
 
         self.answer_buttons = []
-        for idx in range(3):  # Create 3 radio buttons for choices (A, B, C)
+        for idx in range(len(self.questions[self.current_question_index].choices)):
             button = ttk.Radiobutton(self.root, text="", variable=self.answer_var, value="")
             self.answer_buttons.append(button)
             button.pack(pady=5, anchor=tk.CENTER)
@@ -129,7 +123,6 @@ class WindowTwo:
             for idx, choice_button in enumerate(self.answer_buttons):
                 if idx < len(question.choices):
                     choice_button.config(text=question.choices[idx], value=question.choices[idx])
-                    choice_button.pack()
                 else:
                     choice_button.pack_forget()  # Hide extra buttons if fewer choices
 
@@ -152,6 +145,44 @@ class WindowTwo:
     def show_quiz_result(self):
         messagebox.showinfo("Quiz Completed", f"End of Quiz. You scored {self.score}/{len(self.questions)}")
         self.root.destroy()
+
+def initialize_quiz() -> Quiz:
+    questions = Questions().getQuestion()
+
+    topics = [
+        Topic(
+            name="Mathematics",
+            questions=[
+                Question(
+                    text=questions[0]["question"],
+                    choices=questions[0]["choices"],
+                    answer=questions[0]["answer"]
+                ),
+                Question(
+                    text=questions[1]["question"],
+                    choices=questions[1]["choices"],
+                    answer=questions[1]["answer"]
+                )
+            ]
+        ),
+        Topic(
+            name="History",
+            questions=[
+                Question(
+                    text=questions[2]["question"],
+                    choices=questions[2]["choices"],
+                    answer=questions[2]["answer"]
+                ),
+                Question(
+                    text=questions[3]["question"],
+                    choices=questions[3]["choices"],
+                    answer=questions[3]["answer"]
+                )
+            ]
+        )
+    ]
+    
+    return Quiz(topics)
 
 if __name__ == "__main__":
     root = tk.Tk()
