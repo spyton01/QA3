@@ -246,53 +246,62 @@ class WindowTwo:
             self.answer_buttons.append(button)
             button.pack(pady=5, anchor=tk.CENTER)  # Center the Radiobuttons horizontally
 
+        # Buttons for navigation
+        self.prev_button = ttk.Button(self.root, text="Previous", command=self.prev_question)
+        self.prev_button.pack(side=tk.LEFT, padx=10, pady=10)
         self.next_button = ttk.Button(self.root, text="Next", command=self.next_question)
-        self.next_button.pack(pady=10)
+        self.next_button.pack(side=tk.LEFT, padx=10, pady=10)
 
         self.display_question()
 
     def display_question(self):
-        if self.current_question_index < len(self.questions):
-            question = self.questions[self.current_question_index]
-            self.question_label.config(text=f"Question {question.question_id}: {question.question_text}")
+        question = self.questions[self.current_question_index]
+        self.question_label.config(text=f"Question {question.question_id}: {question.question_text}")
 
-            # Set answer values for each Radiobutton
-            for idx, button in enumerate(self.answer_buttons):
-                if idx < len(question.answer_choices):
-                    button['text'] = question.answer_choices[idx]
+        # Set answer values for each Radiobutton
+        for idx, button in enumerate(self.answer_buttons):
+            if idx < len(question.answer_choices):
+                button['text'] = question.answer_choices[idx]
 
-            # Clear previous selection
-            self.answer_var.set("")
-        else:
-            self.show_quiz_result()
+        # Select the user's previously selected answer if available
+        self.answer_var.set(question.answer_choices[0] if question.answer_choices else "")
+
+        # Enable/disable navigation buttons based on current question index
+        self.prev_button.config(state=tk.NORMAL if self.current_question_index > 0 else tk.DISABLED)
+        self.next_button.config(state=tk.NORMAL if self.current_question_index < len(self.questions) - 1 else tk.DISABLED)
+
+    def prev_question(self):
+        if self.current_question_index > 0:
+            self.current_question_index -= 1
+            self.display_question()
 
     def next_question(self):
+        question = self.questions[self.current_question_index]
+
         if self.answer_var.get().strip() == "":
             # Display a message informing the user to select an answer
             messagebox.showwarning("No Answer Selected", "Please select an answer before proceeding.")
         else:
-            question = self.questions[self.current_question_index]
+            # Check user's answer and update score
             user_answer = self.answer_var.get().strip()
-
             if user_answer == question.correct_answer:
-                self.score += 1  # Increment score if answer is correct
+                self.score += 1
 
+            # Move to the next question
             self.current_question_index += 1
-
             if self.current_question_index < len(self.questions):
                 self.display_question()
             else:
-                # Show submit button and disable next button on last question
-                self.next_button.config(state=tk.DISABLED)  # Disable next button
-                self.submit_button = ttk.Button(self.root, text="Submit", command=self.show_quiz_result)
-                self.submit_button.pack(pady=10)
+                # End of quiz, show result and allow to go back
+                self.show_quiz_result()
 
     def show_quiz_result(self):
-        # Create a "Go Back" button
+        # Show quiz result and go back button
+        result_message = f"End of Quiz. You scored {self.score}/{len(self.questions)}"
+        messagebox.showinfo("Quiz Completed", result_message)
+
         go_back_button = ttk.Button(self.root, text="Go Back to Categories", command=self.go_back)
         go_back_button.pack(pady=10)
-
-        messagebox.showinfo("Quiz Completed", f"End of Quiz. You scored {self.score}/{len(self.questions)}")
 
     def go_back(self):
         self.root.destroy()  # Close the quiz window
