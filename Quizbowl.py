@@ -79,8 +79,7 @@ QuizQuestion(9, "How can employees be engaged during Operation Logistic OCM?",
              ["A: Limiting transparency", "B: Encouraging participation", "C: Avoiding feedback"], "B"),
 
 QuizQuestion(10, "Which step is essential for sustaining change after Operation Logistic OCM?",
-              ["A: Reverting to old processes", "B: Continuous monitoring and improvement", "C: Halting communication"], "B")
-        ]
+              ["A: Reverting to old processes", "B: Continuous monitoring and improvement", "C: Halting communication"], "B")]
 
     def get_modern_history_questions(self):
         return [
@@ -113,9 +112,7 @@ QuizQuestion(9, "What was the name of the Allied invasion of Nazi-occupied Europ
              ["A: Operation Market Garden", "B: Operation Overlord", "C: Operation Barbarossa"], "B"),
 
 QuizQuestion(10, "Who was the President of the United States at the end of World War II?",
-              ["A: Franklin D. Roosevelt", "B: Harry S. Truman", "C: Dwight D. Eisenhower"], "B")
-            
-        ]
+              ["A: Franklin D. Roosevelt", "B: Harry S. Truman", "C: Dwight D. Eisenhower"], "B")]
 
     def get_finance_questions(self):
         return [
@@ -147,9 +144,7 @@ QuizQuestion(9, "Which organization is responsible for regulating the stock mark
              ["A: Federal Reserve", "B: Securities and Exchange Commission (SEC)", "C: International Monetary Fund (IMF)"], "B"),
 
 QuizQuestion(10, "What term describes the total value of goods and services produced within a country in a year?",
-              ["A: National income", "B: Gross National Product (GNP)", "C: Gross Domestic Product (GDP)"], "C")
-            
-        ]
+              ["A: National income", "B: Gross National Product (GNP)", "C: Gross Domestic Product (GDP)"], "C")]
 
     def get_business_analytics_questions(self):
         return [
@@ -181,9 +176,7 @@ QuizQuestion(9, "Which technique is used to reduce the dimensionality of data wh
              ["A: Clustering", "B: Principal Component Analysis (PCA)", "C: Time series analysis"], "B"),
 
 QuizQuestion(10, "Which method is used to measure the strength and direction of a linear relationship between two variables?",
-              ["A: Classification", "B: Correlation analysis", "C: Decision tree analysis"], "B")
-            
-        ]
+              ["A: Classification", "B: Correlation analysis", "C: Decision tree analysis"], "B")]
 
     def get_prog_logic_questions(self):
         return [
@@ -215,8 +208,7 @@ QuizQuestion(9, "Which data structure organizes elements in a hierarchical order
              ["A: Array", "B: Binary tree", "C: Hash table"], "B"),
 
 QuizQuestion(10, "What is the primary purpose of exception handling in programming?",
-              ["A: Optimizing code performance", "B: Handling unexpected errors", "C: Improving code readability"], "B")
-        ]
+              ["A: Optimizing code performance", "B: Handling unexpected errors", "C: Improving code readability"], "B")]
 
 class WindowTwo:
     def __init__(self, root, category, questions, main_window):
