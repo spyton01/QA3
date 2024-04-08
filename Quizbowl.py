@@ -28,12 +28,13 @@ class WindowOne:
     def start_quiz(self):
         selected_category = self.selected_category.get()
         if selected_category:
-            self.root.destroy()
+            self.root.withdraw()  # Hide category selection window
 
-            quiz_window = tk.Tk()
+            quiz_window = tk.Toplevel(self.root)
             quiz_window.title(f"Quiz: {selected_category}")
             quiz_window.geometry("600x400")
 
+            # Retrieve questions based on selected category
             if selected_category == "OCM Logistic":
                 questions = self.get_ocm_logistic_questions()
             elif selected_category == "Modern History":
@@ -45,7 +46,7 @@ class WindowOne:
             elif selected_category == "Prog Logic":
                 questions = self.get_prog_logic_questions()
 
-            WindowTwo(quiz_window, selected_category, questions)
+            WindowTwo(quiz_window, selected_category, questions, self.root)
 
     def get_ocm_logistic_questions(self):
         return [
@@ -218,10 +219,11 @@ QuizQuestion(10, "What is the primary purpose of exception handling in programmi
         ]
 
 class WindowTwo:
-    def __init__(self, root, category, questions):
+    def __init__(self, root, category, questions, main_window):
         self.root = root
         self.category = category
         self.questions = questions
+        self.main_window = main_window  # Reference to the main category selection window
 
         self.current_question_index = 0
         self.score = 0  # Initialize score counter
@@ -286,8 +288,15 @@ class WindowTwo:
                 self.submit_button.pack(pady=10)
 
     def show_quiz_result(self):
+        # Create a "Go Back" button
+        go_back_button = ttk.Button(self.root, text="Go Back to Categories", command=self.go_back)
+        go_back_button.pack(pady=10)
+
         messagebox.showinfo("Quiz Completed", f"End of Quiz. You scored {self.score}/{len(self.questions)}")
-        self.root.destroy()
+
+    def go_back(self):
+        self.root.destroy()  # Close the quiz window
+        self.main_window.deiconify()  # Show the main category selection window (WindowOne)
 
 if __name__ == "__main__":
     root = tk.Tk()
